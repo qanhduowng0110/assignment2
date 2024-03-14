@@ -1,50 +1,97 @@
 package services
 
 import (
-	"database/sql"
-	"fmt"
-	"log"
+	"context"
 
+	"entdemo/ent"
+	"entdemo/model"
+	"log"
+	"time"
+
+	"entgo.io/ent/dialect"
+	"entgo.io/ent/dialect/sql"
 	_ "github.com/lib/pq"
 )
 
+// const (
+// 	host     = "localhost"
+// 	port     = "5432"
+// 	user     = "root"
+// 	password = "secret"
+// 	dbname   = "postgres"
+// 	sslmode  = "disable"
+// )
+
 const (
-	host     = "localhost"
-	port     = "5432"
-	user     = "root"
-	password = "secret"
-	dbname   = "postgres"
-	sslmode  = "disable"
+	host        = "localhost"
+	port        = "5433"
+	user        = "postgres"
+	password    = "test12"
+	dbname      = "postgres"
+	sslmode     = "disable"
+	search_path = "simple_bank"
 )
 
-func connect_db() *sql.DB {
-	psqlconn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
-		host, port, user, password, dbname, sslmode)
-	db, err := sql.Open("postgres", psqlconn)
-	checkError(err)
-	// defer db.Close()
-	err = db.Ping()
-	checkError(err)
-	fmt.Println("Connected to database!")
-	return db
+func ConvertIntToTimeStamp(milliseconds int64) time.Time {
+	baseTime := time.Date(1970, 1, 1, 0, 0, 0, 0, time.UTC)
+	// Convert milliseconds to a duration
+	duration := time.Duration(milliseconds) * time.Millisecond
+	// Add the duration to the base time
+	timestamp := baseTime.Add(duration)
+	return timestamp
+
 }
 
-func checkError(err error) {
+func connect_db_v2() (*ent.Client, error) {
+	client, err := ent.Open(dialect.Postgres, "host=localhost port=5433 user=postgres dbname=postgres password=test12 sslmode=disable sslmode=disable search_path=simple_bank")
+	if err != nil {
+		log.Fatalf("failed opening connection to postgres: %v", err)
+	}
+
+	return client, err
+}
+func checkError(description string, err error) {
 	if err != nil {
 		log.Printf(err.Error())
 	}
 }
 
-func Service_get_db() {
-	db := connect_db()
-	rows, err := db.Query("SELECT id, feature_id FROM Earthquakes")
-	checkError(err)
-	fmt.Println(rows)
-	for rows.Next() {
-		var id int
-		var feature_id string
-		err_Scan := rows.Scan(&id, &feature_id)
-		checkError(err_Scan)
-		fmt.Printf("ID: %d, Feature ID: %s", id, feature_id)
-	}
+func Service_get_db() []*ent.Earthquake {
+	client, err := connect_db_v2()
+	ctx := context.Background()
+	checkError("Loi db", err)
+	var earthquakes, errEarth = client.Earthquake.Query().All(ctx)
+	checkError("loi khoi tao background", errEarth)
+	return earthquakes
+}
+
+func Service_get_db_by_paging(pageIndex int, pageSize int) []*ent.Earthquake {
+	client, err := connect_db_v2()
+	ctx := context.Background()
+	checkError("Loi db", err)
+	//limit : lay ra bao nhieu thang , offset bo qua bao nhieu thang
+	var earthquakes, errEarth = client.Earthquake.Query().Limit(pageSize).Offset((pageIndex - 1) * pageSize).Clone().All(ctx)
+	checkError("loi khoi tao background", errEarth)
+	return earthquakes
+}
+
+func Service_get_clause_db_by_paging(filter model.EarthquakeFilterModel) []*ent.Earthquake {
+	client, err := connect_db_v2()
+	ctx := context.Background()
+	checkError("Loi db", err)
+
+	var updateTimeTo = ConvertIntToTimeStamp(int64(filter.UpdateTimeTo))
+	var updateTimeFrom = ConvertIntToTimeStamp(int64(filter.UpdateTimeFrom))
+	//limit : lay ra bao nhieu thang , offset bo qua bao nhieu thang
+	var earthquakes, errEarth = client.Earthquake.Query().Limit(filter.PageIndex).Offset((filter.PageIndex - 1) * filter.PageSize).Where(func(s *sql.Selector) {
+		s.Where(
+			sql.And(
+				sql.EQ("feature_id", filter.Id),
+				sql.LTE("update_time", updateTimeFrom),
+				sql.GTE("update_time", updateTimeTo),
+			),
+		)
+	}).Clone().All(ctx)
+	checkError("loi khoi tao background", errEarth)
+	return earthquakes
 }

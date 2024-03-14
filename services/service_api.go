@@ -24,7 +24,7 @@ func convertIntToTimeStamp(milliseconds int64) time.Time {
 
 }
 
-func api_get() {
+func ApiImportEarthquake() {
 
 	url := "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson"
 
@@ -39,9 +39,8 @@ func api_get() {
 		return
 	}
 
-	log.Printf(fmt.Sprintf("%v", earthquake))
 	//host=localhost port=5432 user=root dbname=postgres password=secret sslmode=disable sslmode=disable
-	client, err := ent.Open(dialect.Postgres, "postgres://root:secret@localhost:5432/postgres?sslmode=disable")
+	client, err := ent.Open(dialect.Postgres, "host=localhost port=5433 user=postgres dbname=postgres password=test12 sslmode=disable sslmode=disable search_path=simple_bank")
 	if err != nil {
 		log.Fatalf("failed opening connection to postgres: %v", err)
 	}
