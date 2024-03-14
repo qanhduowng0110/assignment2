@@ -40,7 +40,7 @@ func ApiImportEarthquake() {
 	}
 
 	//host=localhost port=5432 user=root dbname=postgres password=secret sslmode=disable sslmode=disable
-	client, err := ent.Open(dialect.Postgres, "host=localhost port=5433 user=postgres dbname=postgres password=test12 sslmode=disable sslmode=disable search_path=simple_bank")
+	client, err := ent.Open(dialect.Postgres, "host=localhost port=5432 user=root dbname=postgres password=secret sslmode=disable sslmode=disable") //search_path=simple_bank
 	if err != nil {
 		log.Fatalf("failed opening connection to postgres: %v", err)
 	}

@@ -76,5 +76,5 @@ func main() {
 		Title:        "Swagger API Docs",
 	}
 	app.Use(swagger.New(cfg))
-	app.Listen(":3001")
+	app.Listen(":3000")
 }
