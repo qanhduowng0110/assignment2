@@ -20,10 +20,10 @@ type EarthquakeViewModel struct {
 			Tz      interface{} `json:"tz"`
 			URL     string      `json:"url"`
 			Detail  string      `json:"detail"`
-			Felt    interface{} `json:"felt"`
-			Cdi     interface{} `json:"cdi"`
-			Mmi     interface{} `json:"mmi"`
-			Alert   interface{} `json:"alert"`
+			Felt    int32       `json:"felt"`
+			Cdi     float64     `json:"cdi"`
+			Mmi     float64     `json:"mmi"`
+			Alert   string      `json:"alert"`
 			Status  string      `json:"status"`
 			Tsunami int32       `json:"tsunami"`
 			Sig     int32       `json:"sig"`

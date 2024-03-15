@@ -51,7 +51,8 @@ func ApiImportEarthquake() {
 	// }
 
 	for i := 0; i < len(earthquake.Features); i++ {
-		client.Earthquake.Create().
+
+		earthquake_report := client.Earthquake.Create().
 			SetFeatureID(earthquake.Features[i].ID).
 			SetMagnitude(earthquake.Features[i].Properties.Mag).
 			SetOccurTime(convertIntToTimeStamp(earthquake.Features[i].Properties.Time)).
@@ -69,6 +70,39 @@ func ApiImportEarthquake() {
 			SetGap(earthquake.Features[i].Properties.Gap).
 			SetMagType(earthquake.Features[i].Properties.MagType).
 			SetEarthquakeType(earthquake.Features[i].Type).
-			Save(context.Background())
+			SaveX(context.Background())
+
+		earthquake_report_id := earthquake_report.ID
+
+		client.FeatureType.Create().
+			SetEarthquakeID(earthquake_report_id).
+			SetFeatureProductType(earthquake.Features[i].Type).
+			SaveX(context.Background())
+
+		client.Geometry.Create().
+			SetEarthquakeID(earthquake_report_id).
+			SetLongitude(earthquake.Features[i].Geometry.Coordinates[0]).
+			SetLatitude(earthquake.Features[i].Geometry.Coordinates[1]).
+			SetDepth(earthquake.Features[i].Geometry.Coordinates[2]).
+			SetPlace(earthquake.Features[i].Properties.Place).
+			SaveX(context.Background())
+
+		client.AssociatedEvent.Create().
+			SetEarthquakeID(earthquake_report_id).
+			SetAssociateID(earthquake.Features[i].Properties.Ids).
+			SaveX(context.Background())
+
+		client.EventType.Create().
+			SetEarthquakeID(earthquake_report_id).
+			SetTypes(earthquake.Features[i].Geometry.Type).
+			SaveX(context.Background())
+
+		client.FeltReport.Create().
+			SetEarthquakeID(earthquake_report_id).
+			SetFelt(earthquake.Features[i].Properties.Felt).
+			SetCdi(earthquake.Features[i].Properties.Cdi).
+			SetMmi(earthquake.Features[i].Properties.Mmi).
+			SetAlert(earthquake.Features[i].Properties.Alert).
+			SaveX(context.Background())
 	}
 }

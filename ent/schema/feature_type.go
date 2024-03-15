@@ -15,7 +15,7 @@ type FeatureType struct {
 }
 
 func (FeatureType) Fields() []ent.Field {
-	return []ent.Field{field.Int32("id"), field.Int32("earthquake_id").Optional(), field.String("feature_product_type")}
+	return []ent.Field{field.String("id").StorageKey("earthquake_id"), field.String("feature_product_type")}
 }
 func (FeatureType) Edges() []ent.Edge {
 	return []ent.Edge{edge.From("earthquake", Earthquake.Type).Ref("feature_types").Unique().Field("earthquake_id")}

@@ -15,16 +15,20 @@ type Earthquake struct {
 }
 
 func (Earthquake) Fields() []ent.Field {
-	return []ent.Field{field.Int32("id"), field.String("feature_id"), field.Float("magnitude"), field.Time("occur_time"), field.Time("update_time"), field.String("url"), field.String("detail_url"), field.String("status"), field.Int32("tsunami"), field.Int32("sig"), field.String("net"), field.String("code"), field.Int32("nst"), field.Float("dmin"), field.Float("rms"), field.Float("gap"), field.String("mag_type"), field.String("earthquake_type")}
+	return []ent.Field{field.String("id").StorageKey("earthquake_id"), 
+	field.Float("magnitude"), field.Time("occur_time"), 
+	field.Time("update_time"), field.String("url"), 
+	field.String("detail_url"), field.String("status"), 
+	field.Int32("tsunami"), field.Int32("sig"), 
+	field.String("net"), field.String("code"), 
+	field.Int32("nst"), field.Float("dmin"), 
+	field.Float("rms"), field.Float("gap"), 
+	field.String("mag_type"), 
+	field.String("earthquake_type")}
 }
+
 func (Earthquake) Edges() []ent.Edge {
-	return []ent.Edge{
-	edge.To("main_events", AssociatedEvent.Type),
-	edge.To("associated_events", AssociatedEvent.Type), 
-	edge.To("event_types", EventType.Type), 
-	edge.To("feature_types", FeatureType.Type), 
-	edge.To("felt_reports", FeltReport.Type), 
-	edge.To("geometries", Geometry.Type)}
+	return []ent.Edge{edge.To("associated_events", AssociatedEvent.Type), edge.To("event_types", EventType.Type), edge.To("feature_types", FeatureType.Type), edge.To("felt_reports", FeltReport.Type), edge.To("geometries", Geometry.Type)}
 }
 func (Earthquake) Annotations() []schema.Annotation {
 	return []schema.Annotation{entsql.Annotation{Table: "Earthquakes"}}

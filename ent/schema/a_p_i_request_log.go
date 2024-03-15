@@ -24,19 +24,6 @@ func (APIRequestLog) Fields() []ent.Field {
 	field.Time("updated_at"),
 	field.Time("deleted_at").Optional()}
 }
-
-// func (Apireq) Fields() []ent.Field {
-//     return []ent.Field{field.Int("id"),
-//         field.Time("req_time"),
-//         field.JSON("req_param", map[string]interface{}{}),
-//         field.JSON("req_body", map[string]interface{}{}),
-//         field.JSON("req_headers", map[string]interface{}{}),
-//         field.JSON("req_metadata", map[string]interface{}{}),
-//         field.Time("created_at"), field.Time("updated_at"),
-//         field.Time("deleted_at").Optional()}
- 
-// }
-
 func (APIRequestLog) Edges() []ent.Edge {
 	return nil
 }

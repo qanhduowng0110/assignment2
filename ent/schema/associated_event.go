@@ -15,12 +15,10 @@ type AssociatedEvent struct {
 }
 
 func (AssociatedEvent) Fields() []ent.Field {
-	return []ent.Field{field.Int32("id"), field.Int32("earthquake_id").Optional(), field.Int32("associate_id").Optional()}
+	return []ent.Field{field.String("id").StorageKey("earthquake_id"), field.String("associate_id")}
 }
 func (AssociatedEvent) Edges() []ent.Edge {
-	return []ent.Edge{
-		edge.From("main_event_earthquake", Earthquake.Type).Ref("associated_events").Unique().Field("associate_id"), 
-		edge.From("associated_event_earthquake", Earthquake.Type).Ref("main_events").Unique().Field("earthquake_id")}
+	return []ent.Edge{edge.From("earthquake", Earthquake.Type).Ref("associated_events").Unique().Field("earthquake_id")}
 }
 func (AssociatedEvent) Annotations() []schema.Annotation {
 	return []schema.Annotation{entsql.Annotation{Table: "Associated_events"}}

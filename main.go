@@ -9,6 +9,7 @@ import (
 )
 
 func main() {
+	services.ApiImportEarthquake()
 	app := fiber.New()
 
 	app.Get("/api/earthquakes/get-all", func(c *fiber.Ctx) error {

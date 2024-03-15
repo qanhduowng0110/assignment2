@@ -15,7 +15,7 @@ type FeltReport struct {
 }
 
 func (FeltReport) Fields() []ent.Field {
-	return []ent.Field{field.Int32("id"), field.Int32("earthquake_id").Optional(), field.Int32("felt").Optional(), field.Float("cdi").Optional(), field.Float("mmi").Optional(), field.String("alert").Optional()}
+	return []ent.Field{field.String("id").StorageKey("earthquake_id"), field.Int32("felt").Optional(), field.Float("cdi").Optional(), field.Float("mmi").Optional(), field.String("alert").Optional()}
 }
 func (FeltReport) Edges() []ent.Edge {
 	return []ent.Edge{edge.From("earthquake", Earthquake.Type).Ref("felt_reports").Unique().Field("earthquake_id")}

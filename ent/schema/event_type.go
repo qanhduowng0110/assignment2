@@ -15,7 +15,7 @@ type EventType struct {
 }
 
 func (EventType) Fields() []ent.Field {
-	return []ent.Field{field.Int32("id"), field.Int32("earthquake_id").Optional(), field.String("types").Optional()}
+	return []ent.Field{field.String("id").StorageKey("earthquake_id"), field.String("types").Optional()}
 }
 func (EventType) Edges() []ent.Edge {
 	return []ent.Edge{edge.From("earthquake", Earthquake.Type).Ref("event_types").Unique().Field("earthquake_id")}

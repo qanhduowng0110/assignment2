@@ -15,7 +15,7 @@ type Geometry struct {
 }
 
 func (Geometry) Fields() []ent.Field {
-	return []ent.Field{field.Int32("id"), field.Int32("earthquake_id").Optional(), field.Float("longitude"), field.Float("latitude"), field.Float("depth"), field.String("place")}
+	return []ent.Field{field.String("id").StorageKey("earthquake_id"), field.Float("longitude"), field.Float("latitude"), field.Float("depth"), field.String("place")}
 }
 func (Geometry) Edges() []ent.Edge {
 	return []ent.Edge{edge.From("earthquake", Earthquake.Type).Ref("geometries").Unique().Field("earthquake_id")}
