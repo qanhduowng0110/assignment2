@@ -23,12 +23,12 @@ import (
 // )
 
 const (
-	host        = "localhost"
-	port        = "5433"
-	user        = "postgres"
-	password    = "test12"
-	dbname      = "postgres"
-	sslmode     = "disable"
+	host     = "localhost"
+	port     = "5433"
+	user     = "postgres"
+	password = "test12"
+	dbname   = "postgres"
+	sslmode  = "disable"
 	//search_path = "simple_bank"
 )
 
@@ -45,7 +45,7 @@ func ConvertIntToTimeStamp(milliseconds int64) time.Time {
 func connect_db_v2() (*ent.Client, error) {
 	client, err := ent.Open(dialect.Postgres, "host=localhost port=5432 user=root dbname=postgres password=secret sslmode=disable sslmode=disable") // search_path=simple_bank
 	if err != nil {
-		log.Fatalf("failed opening connection to postgres: %v", err)
+		log.Fatalf("Failed opening connection to postgres: %v", err)
 	}
 
 	return client, err
@@ -59,30 +59,28 @@ func checkError(description string, err error) {
 func Service_get_db() []*ent.Earthquake {
 	client, err := connect_db_v2()
 	ctx := context.Background()
-	checkError("Loi db", err)
+	checkError("Database error:", err)
 	var earthquakes, errEarth = client.Earthquake.Query().All(ctx)
-	checkError("loi khoi tao background", errEarth)
+	checkError("Background initialize error:", errEarth)
 	return earthquakes
 }
 
 func Service_get_db_by_paging(pageIndex int, pageSize int) []*ent.Earthquake {
 	client, err := connect_db_v2()
 	ctx := context.Background()
-	checkError("Loi db", err)
-	//limit : lay ra bao nhieu thang , offset bo qua bao nhieu thang
+	checkError("Database error:", err)
 	var earthquakes, errEarth = client.Earthquake.Query().Limit(pageSize).Offset((pageIndex - 1) * pageSize).Clone().All(ctx)
-	checkError("loi khoi tao background", errEarth)
+	checkError("Background initialize error:", errEarth)
 	return earthquakes
 }
 
 func Service_get_clause_db_by_paging(filter model.EarthquakeFilterModel) []*ent.Earthquake {
 	client, err := connect_db_v2()
 	ctx := context.Background()
-	checkError("Loi db", err)
+	checkError("Database error:", err)
 
 	var updateTimeTo = ConvertIntToTimeStamp(int64(filter.UpdateTimeTo))
 	var updateTimeFrom = ConvertIntToTimeStamp(int64(filter.UpdateTimeFrom))
-	//limit : lay ra bao nhieu thang , offset bo qua bao nhieu thang
 	var earthquakes, errEarth = client.Earthquake.Query().Limit(filter.PageIndex).Offset((filter.PageIndex - 1) * filter.PageSize).Where(func(s *sql.Selector) {
 		s.Where(
 			sql.And(
@@ -92,6 +90,6 @@ func Service_get_clause_db_by_paging(filter model.EarthquakeFilterModel) []*ent.
 			),
 		)
 	}).Clone().All(ctx)
-	checkError("loi khoi tao background", errEarth)
+	checkError("Background initialize error:", errEarth)
 	return earthquakes
 }
