@@ -15,11 +15,11 @@ type Geometry struct {
 }
 
 func (Geometry) Fields() []ent.Field {
-	return []ent.Field{field.String("id").StorageKey("earthquake_id"), field.Float("longitude"), field.Float("latitude"), field.Float("depth"), field.String("place")}
+	return []ent.Field{field.Int("id"), field.Int("location_id").Optional(), field.Float("longitude"), field.Float("latitude"), field.Float("depth"), field.Time("created_at"), field.Time("updated_at"), field.Time("deleted_at").Optional()}
 }
 func (Geometry) Edges() []ent.Edge {
-	return []ent.Edge{edge.From("earthquake", Earthquake.Type).Ref("geometries").Unique().Field("earthquake_id")}
+	return []ent.Edge{edge.To("earthquakes", Earthquake.Type), edge.From("location", Location.Type).Ref("geometries").Unique().Field("location_id")}
 }
 func (Geometry) Annotations() []schema.Annotation {
-	return []schema.Annotation{entsql.Annotation{Table: "Geometry"}}
+	return []schema.Annotation{entsql.Annotation{Table: "geometry"}}
 }

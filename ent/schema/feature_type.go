@@ -15,11 +15,11 @@ type FeatureType struct {
 }
 
 func (FeatureType) Fields() []ent.Field {
-	return []ent.Field{field.String("id").StorageKey("earthquake_id"), field.String("feature_product_type")}
+	return []ent.Field{field.Int("id"), field.String("feat_type").Optional(), field.Time("created_at"), field.Time("updated_at"), field.Time("deleted_at").Optional()}
 }
 func (FeatureType) Edges() []ent.Edge {
-	return []ent.Edge{edge.From("earthquake", Earthquake.Type).Ref("feature_types").Unique().Field("earthquake_id")}
+	return []ent.Edge{edge.To("ftype_earthquakes", FtypeEarthquake.Type)}
 }
 func (FeatureType) Annotations() []schema.Annotation {
-	return []schema.Annotation{entsql.Annotation{Table: "Feature_types"}}
+	return []schema.Annotation{entsql.Annotation{Table: "feature_type"}}
 }
