@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"entdemo/ent"
 	"entdemo/model"
-	"fmt"
 	"log"
 	"time"
 
@@ -35,30 +34,55 @@ func ApiImportEarthquake() {
 	var earthquake model.EarthquakeViewModel
 	err := json.Unmarshal([]byte(res.Data.([]byte)), &earthquake)
 	if err != nil {
-		fmt.Println("Error:", err)
 		return
 	}
 
-	//host=localhost port=5432 user=root dbname=postgres password=secret sslmode=disable sslmode=disable
-	client, err := ent.Open(dialect.Postgres, "host=localhost port=5432 user=root dbname=postgres password=secret sslmode=disable sslmode=disable") //search_path=simple_bank
+	client, err := ent.Open(dialect.Postgres, "host=localhost port=5432 user=root dbname=postgres password=secret sslmode=disable") 
 	if err != nil {
 		log.Fatalf("failed opening connection to postgres: %v", err)
 	}
 	defer client.Close()
-	// Run the auto migration tool.
-	// if err := client.Schema.Create(context.Background()); err != nil {
-	// 	log.Fatalf("failed creating schema resources: %v", err)
-	// }
+
+	var ctx = context.Background()
+	// Sync function
+	// Delete all data in DB
+	client.FtypeEarthquake.Delete().Exec(ctx)
+	client.Earthquake.Delete().Exec(ctx)
+	client.Geometry.Delete().Exec(ctx)
+	client.Report.Delete().Exec(ctx)
 
 	for i := 0; i < len(earthquake.Features); i++ {
+		var reportNew = client.Report.Create().
+			SetFelt(earthquake.Features[i].Properties.Felt).
+			SetAlert(earthquake.Features[i].Properties.Alert).
+			SetMmi(earthquake.Features[i].Properties.Mmi).
+			SetCdi(earthquake.Features[i].Properties.Cdi).
+			SetCreatedAt(time.Now()).
+			SetUpdatedAt(time.Now()).
+			SaveX(ctx)
+
+		var geoNew = client.Geometry.Create().
+			SetLocationID(1).
+			SetLongitude(earthquake.Features[i].Geometry.Coordinates[0]).
+			SetLatitude(earthquake.Features[i].Geometry.Coordinates[1]).
+			SetDepth(earthquake.Features[i].Geometry.Coordinates[2]).
+			SetCreatedAt(time.Now()).
+			SetUpdatedAt(time.Now()).
+			SaveX(ctx)
+		var tzValue int32
+		if tz, ok := earthquake.Features[i].Properties.Tz.(int32); ok {
+			tzValue = tz
+		}
 
 		earthquake_report := client.Earthquake.Create().
-			SetFeatureID(earthquake.Features[i].ID).
-			SetMagnitude(earthquake.Features[i].Properties.Mag).
-			SetOccurTime(convertIntToTimeStamp(earthquake.Features[i].Properties.Time)).
-			SetUpdateTime(convertIntToTimeStamp(earthquake.Features[i].Properties.Updated)).
+			SetGeoID(geoNew.ID).
+			SetReportID(reportNew.ID).
+			SetMag(earthquake.Features[i].Properties.Mag).
+			SetTime(convertIntToTimeStamp(earthquake.Features[i].Properties.Time)).
+			SetUpdatedTime(convertIntToTimeStamp(earthquake.Features[i].Properties.Updated)).
 			SetURL(earthquake.Features[i].Properties.URL).
-			SetDetailURL(earthquake.Features[i].Properties.Detail).
+			SetTz(int32(tzValue)).
+			SetDetail(earthquake.Features[i].Properties.Detail).
 			SetStatus(earthquake.Features[i].Properties.Status).
 			SetTsunami(earthquake.Features[i].Properties.Tsunami).
 			SetSig(earthquake.Features[i].Properties.Sig).
@@ -69,40 +93,18 @@ func ApiImportEarthquake() {
 			SetRms(earthquake.Features[i].Properties.Rms).
 			SetGap(earthquake.Features[i].Properties.Gap).
 			SetMagType(earthquake.Features[i].Properties.MagType).
-			SetEarthquakeType(earthquake.Features[i].Type).
-			SaveX(context.Background())
+			SetEqType(earthquake.Features[i].Type).
+			SetCreatedAt(time.Now()).
+			SetUpdatedAt(time.Now()).
+			SaveX(ctx)
 
 		earthquake_report_id := earthquake_report.ID
 
-		client.FeatureType.Create().
+		client.FtypeEarthquake.Create().
 			SetEarthquakeID(earthquake_report_id).
-			SetFeatureProductType(earthquake.Features[i].Type).
-			SaveX(context.Background())
-
-		client.Geometry.Create().
-			SetEarthquakeID(earthquake_report_id).
-			SetLongitude(earthquake.Features[i].Geometry.Coordinates[0]).
-			SetLatitude(earthquake.Features[i].Geometry.Coordinates[1]).
-			SetDepth(earthquake.Features[i].Geometry.Coordinates[2]).
-			SetPlace(earthquake.Features[i].Properties.Place).
-			SaveX(context.Background())
-
-		client.AssociatedEvent.Create().
-			SetEarthquakeID(earthquake_report_id).
-			SetAssociateID(earthquake.Features[i].Properties.Ids).
-			SaveX(context.Background())
-
-		client.EventType.Create().
-			SetEarthquakeID(earthquake_report_id).
-			SetTypes(earthquake.Features[i].Geometry.Type).
-			SaveX(context.Background())
-
-		client.FeltReport.Create().
-			SetEarthquakeID(earthquake_report_id).
-			SetFelt(earthquake.Features[i].Properties.Felt).
-			SetCdi(earthquake.Features[i].Properties.Cdi).
-			SetMmi(earthquake.Features[i].Properties.Mmi).
-			SetAlert(earthquake.Features[i].Properties.Alert).
+			SetFtID(1).
+			SetCreatedAt(time.Now()).
+			SetUpdatedAt(time.Now()).
 			SaveX(context.Background())
 	}
 }

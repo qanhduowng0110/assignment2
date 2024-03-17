@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"encoding/json"
 
 	"entdemo/ent"
 	"entdemo/model"
@@ -13,24 +14,22 @@ import (
 	_ "github.com/lib/pq"
 )
 
-// const (
-// 	host     = "localhost"
-// 	port     = "5432"
-// 	user     = "root"
-// 	password = "secret"
-// 	dbname   = "postgres"
-// 	sslmode  = "disable"
-// )
+// xu ly convert interface struct to struct khong xd
+func ConvertStructIdentifyToNotStruct(myStruct any) struct{} {
+	jsonData, err := json.Marshal(myStruct)
+	if err != nil {
 
-const (
-	host     = "localhost"
-	port     = "5433"
-	user     = "postgres"
-	password = "test12"
-	dbname   = "postgres"
-	sslmode  = "disable"
-	//search_path = "simple_bank"
-)
+		return struct{}{}
+	}
+
+	// Chuỗi JSON đại diện cho struct
+	jsonStr := string(jsonData)
+
+	// Chuyển đổi chuỗi JSON thành struct không xác định
+	var unknownStruct struct{}
+	err = json.Unmarshal([]byte(jsonStr), &unknownStruct)
+	return unknownStruct
+}
 
 func ConvertIntToTimeStamp(milliseconds int64) time.Time {
 	baseTime := time.Date(1970, 1, 1, 0, 0, 0, 0, time.UTC)
@@ -43,7 +42,7 @@ func ConvertIntToTimeStamp(milliseconds int64) time.Time {
 }
 
 func connect_db_v2() (*ent.Client, error) {
-	client, err := ent.Open(dialect.Postgres, "host=localhost port=5432 user=root dbname=postgres password=secret sslmode=disable sslmode=disable") // search_path=simple_bank
+	client, err := ent.Open(dialect.Postgres, "host=localhost port=5432 user=root dbname=postgres password=secret sslmode=disable")
 	if err != nil {
 		log.Fatalf("Failed opening connection to postgres: %v", err)
 	}
@@ -69,7 +68,9 @@ func Service_get_db_by_paging(pageIndex int, pageSize int) []*ent.Earthquake {
 	client, err := connect_db_v2()
 	ctx := context.Background()
 	checkError("Database error:", err)
-	var earthquakes, errEarth = client.Earthquake.Query().Limit(pageSize).Offset((pageIndex - 1) * pageSize).Clone().All(ctx)
+	var earthquakes, errEarth = client.Earthquake.Query().Limit(pageSize).Offset((pageIndex - 1) * pageSize).Clone().Order(func(s *sql.Selector) {
+		sql.OrderByField("updated_time", sql.OrderDesc())
+	}).All(ctx)
 	checkError("Background initialize error:", errEarth)
 	return earthquakes
 }
@@ -81,15 +82,33 @@ func Service_get_clause_db_by_paging(filter model.EarthquakeFilterModel) []*ent.
 
 	var updateTimeTo = ConvertIntToTimeStamp(int64(filter.UpdateTimeTo))
 	var updateTimeFrom = ConvertIntToTimeStamp(int64(filter.UpdateTimeFrom))
-	var earthquakes, errEarth = client.Earthquake.Query().Limit(filter.PageIndex).Offset((filter.PageIndex - 1) * filter.PageSize).Where(func(s *sql.Selector) {
+	var earthquakes, errEarth = client.Earthquake.Query().Limit(filter.PageSize).Offset((filter.PageIndex - 1) * filter.PageSize).Where(func(s *sql.Selector) {
 		s.Where(
 			sql.And(
-				sql.EQ("feature_id", filter.Id),
-				sql.LTE("update_time", updateTimeFrom),
-				sql.GTE("update_time", updateTimeTo),
+				sql.LTE("updated_time", updateTimeTo),
+				sql.GTE("updated_time", updateTimeFrom),
 			),
 		)
 	}).Clone().All(ctx)
+
 	checkError("Background initialize error:", errEarth)
 	return earthquakes
+}
+
+// hàm xử lý lưu các filter của api
+func InsertLogApiRequest(filter model.ApiReqFilterModel) bool {
+	client, err := connect_db_v2()
+	ctx := context.Background()
+	checkError("Database error:", err)
+
+	var _, errorInsert = client.Apireq.Create().
+		SetReqParam(filter.ReqParam).
+		SetReqBody(ConvertStructIdentifyToNotStruct(filter.ReqBody)).
+		SetReqMetadata(filter.ReqMetadata).
+		SetReqHeaders(filter.ReqHeaders).
+		SetReqTime(time.Now()).
+		SetCreatedAt(time.Now()).
+		SetUpdatedAt(time.Now()).Save(ctx)
+	checkError(" InsertLogApiRequest Background initialize error:", errorInsert)
+	return true
 }

@@ -14,7 +14,15 @@ type Apireq struct {
 }
 
 func (Apireq) Fields() []ent.Field {
-	return []ent.Field{field.Int("id"), field.Time("req_time"), field.JSON("req_param", struct{}{}), field.JSON("req_body").Optional(struct{}{}), field.JSON("req_headers").Optional(struct{}{}), field.JSON("req_metadata").Optional(struct{}{}), field.Time("created_at"), field.Time("updated_at"), field.Time("deleted_at").Optional()}
+	return []ent.Field{field.Int("id"), 
+	field.Time("req_time"), 
+	field.JSON("req_param", struct{}{}), 
+	field.JSON("req_body", struct{}{}).Optional(), 
+	field.JSON("req_headers", struct{}{}).Optional(), 
+	field.JSON("req_metadata", struct{}{}).Optional(), 
+	field.Time("created_at"), 
+	field.Time("updated_at"), 
+	field.Time("deleted_at").Optional()}
 
 }
 func (Apireq) Edges() []ent.Edge {
