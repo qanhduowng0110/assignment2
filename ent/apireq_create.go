@@ -27,50 +27,26 @@ func (ac *ApireqCreate) SetReqTime(t time.Time) *ApireqCreate {
 }
 
 // SetReqParam sets the "req_param" field.
-func (ac *ApireqCreate) SetReqParam(s struct{}) *ApireqCreate {
-	ac.mutation.SetReqParam(s)
+func (ac *ApireqCreate) SetReqParam(m map[string]interface{}) *ApireqCreate {
+	ac.mutation.SetReqParam(m)
 	return ac
 }
 
 // SetReqBody sets the "req_body" field.
-func (ac *ApireqCreate) SetReqBody(s struct{}) *ApireqCreate {
-	ac.mutation.SetReqBody(s)
-	return ac
-}
-
-// SetNillableReqBody sets the "req_body" field if the given value is not nil.
-func (ac *ApireqCreate) SetNillableReqBody(s *struct{}) *ApireqCreate {
-	if s != nil {
-		ac.SetReqBody(*s)
-	}
+func (ac *ApireqCreate) SetReqBody(m map[string]interface{}) *ApireqCreate {
+	ac.mutation.SetReqBody(m)
 	return ac
 }
 
 // SetReqHeaders sets the "req_headers" field.
-func (ac *ApireqCreate) SetReqHeaders(s struct{}) *ApireqCreate {
-	ac.mutation.SetReqHeaders(s)
-	return ac
-}
-
-// SetNillableReqHeaders sets the "req_headers" field if the given value is not nil.
-func (ac *ApireqCreate) SetNillableReqHeaders(s *struct{}) *ApireqCreate {
-	if s != nil {
-		ac.SetReqHeaders(*s)
-	}
+func (ac *ApireqCreate) SetReqHeaders(m map[string]interface{}) *ApireqCreate {
+	ac.mutation.SetReqHeaders(m)
 	return ac
 }
 
 // SetReqMetadata sets the "req_metadata" field.
-func (ac *ApireqCreate) SetReqMetadata(s struct{}) *ApireqCreate {
-	ac.mutation.SetReqMetadata(s)
-	return ac
-}
-
-// SetNillableReqMetadata sets the "req_metadata" field if the given value is not nil.
-func (ac *ApireqCreate) SetNillableReqMetadata(s *struct{}) *ApireqCreate {
-	if s != nil {
-		ac.SetReqMetadata(*s)
-	}
+func (ac *ApireqCreate) SetReqMetadata(m map[string]interface{}) *ApireqCreate {
+	ac.mutation.SetReqMetadata(m)
 	return ac
 }
 

@@ -1,25 +1,43 @@
 package api
 
 import (
-	"entdemo/model"
+	"entdemo/ent"
 	"entdemo/services"
+	"reflect"
 	"strconv"
 
 	swagger "github.com/arsmn/fiber-swagger/v2"
 	fiber "github.com/gofiber/fiber/v2"
 )
 
+// convert interface to map[string] interface
+func structToMap(obj interface{}) map[string]interface{} {
+	objValue := reflect.ValueOf(obj)
+	objType := objValue.Type()
+
+	if objType.Kind() != reflect.Struct {
+		return nil
+	}
+
+	result := make(map[string]interface{})
+	for i := 0; i < objType.NumField(); i++ {
+		field := objType.Field(i)
+		fieldValue := objValue.Field(i).Interface()
+		result[field.Name] = fieldValue
+	}
+
+	return result
+}
+
 func ApiGet() {
-	// services.ApiImportEarthquake()
-	
 	app := fiber.New()
-	
-	app.Get("/api/earthquakes/get-all", func(c *fiber.Ctx) error {
+
+	app.Get("/get-all", func(c *fiber.Ctx) error {
 		var earthquakes = services.Service_get_db()
 		return c.JSON(earthquakes)
 	})
-	
-	app.Get("/api/earthquakes/get-by-paging", func(c *fiber.Ctx) error {
+
+	app.Get("/get-by-paging", func(c *fiber.Ctx) error {
 		var pageSize, errSize = strconv.Atoi(c.Query("pageSize"))
 		var pageIndex, errIndex = strconv.Atoi(c.Query("pageIndex"))
 		var earthquakes = services.Service_get_db_by_paging(pageIndex, pageSize)
@@ -28,37 +46,25 @@ func ApiGet() {
 		}
 		return c.JSON(earthquakes)
 	})
-	
-	// api thu test func filter  muon filter them truong gi thi viet them vao model  EarthquakeFilterModel
-	// viet them 1 method POST de nhan param tu payload body hien api nay dang fix cung
-	app.Get("/api/earthquakes/get-by-paging-v3", func(c *fiber.Ctx) error {
-	
-		var equalFilter model.EarthquakeFilterModel
-	
-		// da fix cung o day
-		equalFilter.PageIndex = 1
-		equalFilter.PageSize = 10
-		equalFilter.UpdateTimeFrom = 1710611748300
-		equalFilter.UpdateTimeTo = 1710611838484
-		var logfilter model.ApiReqFilterModel
-		logfilter.ReqBody = equalFilter
-	
-		// luu lai log data luu vao log api
-		// sau khi luu xong viet them 1 api get ra bo loc co tim kiem nhieu nhat trong ngay
-		services.InsertLogApiRequest(logfilter)
-		var earthquakes = services.Service_get_clause_db_by_paging(equalFilter)
-	
-		return c.JSON(earthquakes)
+
+	app.Post("/sync-data", func(c *fiber.Ctx) error {
+		services.ApiImportEarthquake()
+		return c.SendString("Sucess!")
 	})
-		
+	app.Get("/filter-by-status", func(c *fiber.Ctx) error {
+		var stt string = c.Query("status")
+		var result []*ent.Earthquake = services.Service_filter_by_status(stt)
+		c.SendString("Sucess!")
+		return c.JSON(result)
+	})
+
 	cfg := swagger.Config{
-		URL:         "http://example.com/doc.json",
-		DeepLinking: false,
-		// Expand ("list") or Collapse ("none") tag groups by default
+		URL:          "localhost:3000",
+		DeepLinking:  false,
 		DocExpansion: "none",
 		Title:        "Swagger API Docs",
 	}
-	
+
 	app.Use(swagger.New(cfg))
 	app.Listen(":3000")
-	}
+}

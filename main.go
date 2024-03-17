@@ -1,9 +1,11 @@
 package main
 
 import (
-	"routes"
+	"entdemo/api"
+	"entdemo/worker"
 )
 
-func main(){
-	routes.Route()
+func main() {
+	api.ApiGet()
+	go worker.AutoSync()
 }

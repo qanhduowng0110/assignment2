@@ -43,30 +43,14 @@ func (au *ApireqUpdate) SetNillableReqTime(t *time.Time) *ApireqUpdate {
 }
 
 // SetReqParam sets the "req_param" field.
-func (au *ApireqUpdate) SetReqParam(s struct{}) *ApireqUpdate {
-	au.mutation.SetReqParam(s)
-	return au
-}
-
-// SetNillableReqParam sets the "req_param" field if the given value is not nil.
-func (au *ApireqUpdate) SetNillableReqParam(s *struct{}) *ApireqUpdate {
-	if s != nil {
-		au.SetReqParam(*s)
-	}
+func (au *ApireqUpdate) SetReqParam(m map[string]interface{}) *ApireqUpdate {
+	au.mutation.SetReqParam(m)
 	return au
 }
 
 // SetReqBody sets the "req_body" field.
-func (au *ApireqUpdate) SetReqBody(s struct{}) *ApireqUpdate {
-	au.mutation.SetReqBody(s)
-	return au
-}
-
-// SetNillableReqBody sets the "req_body" field if the given value is not nil.
-func (au *ApireqUpdate) SetNillableReqBody(s *struct{}) *ApireqUpdate {
-	if s != nil {
-		au.SetReqBody(*s)
-	}
+func (au *ApireqUpdate) SetReqBody(m map[string]interface{}) *ApireqUpdate {
+	au.mutation.SetReqBody(m)
 	return au
 }
 
@@ -77,16 +61,8 @@ func (au *ApireqUpdate) ClearReqBody() *ApireqUpdate {
 }
 
 // SetReqHeaders sets the "req_headers" field.
-func (au *ApireqUpdate) SetReqHeaders(s struct{}) *ApireqUpdate {
-	au.mutation.SetReqHeaders(s)
-	return au
-}
-
-// SetNillableReqHeaders sets the "req_headers" field if the given value is not nil.
-func (au *ApireqUpdate) SetNillableReqHeaders(s *struct{}) *ApireqUpdate {
-	if s != nil {
-		au.SetReqHeaders(*s)
-	}
+func (au *ApireqUpdate) SetReqHeaders(m map[string]interface{}) *ApireqUpdate {
+	au.mutation.SetReqHeaders(m)
 	return au
 }
 
@@ -97,16 +73,8 @@ func (au *ApireqUpdate) ClearReqHeaders() *ApireqUpdate {
 }
 
 // SetReqMetadata sets the "req_metadata" field.
-func (au *ApireqUpdate) SetReqMetadata(s struct{}) *ApireqUpdate {
-	au.mutation.SetReqMetadata(s)
-	return au
-}
-
-// SetNillableReqMetadata sets the "req_metadata" field if the given value is not nil.
-func (au *ApireqUpdate) SetNillableReqMetadata(s *struct{}) *ApireqUpdate {
-	if s != nil {
-		au.SetReqMetadata(*s)
-	}
+func (au *ApireqUpdate) SetReqMetadata(m map[string]interface{}) *ApireqUpdate {
+	au.mutation.SetReqMetadata(m)
 	return au
 }
 
@@ -276,30 +244,14 @@ func (auo *ApireqUpdateOne) SetNillableReqTime(t *time.Time) *ApireqUpdateOne {
 }
 
 // SetReqParam sets the "req_param" field.
-func (auo *ApireqUpdateOne) SetReqParam(s struct{}) *ApireqUpdateOne {
-	auo.mutation.SetReqParam(s)
-	return auo
-}
-
-// SetNillableReqParam sets the "req_param" field if the given value is not nil.
-func (auo *ApireqUpdateOne) SetNillableReqParam(s *struct{}) *ApireqUpdateOne {
-	if s != nil {
-		auo.SetReqParam(*s)
-	}
+func (auo *ApireqUpdateOne) SetReqParam(m map[string]interface{}) *ApireqUpdateOne {
+	auo.mutation.SetReqParam(m)
 	return auo
 }
 
 // SetReqBody sets the "req_body" field.
-func (auo *ApireqUpdateOne) SetReqBody(s struct{}) *ApireqUpdateOne {
-	auo.mutation.SetReqBody(s)
-	return auo
-}
-
-// SetNillableReqBody sets the "req_body" field if the given value is not nil.
-func (auo *ApireqUpdateOne) SetNillableReqBody(s *struct{}) *ApireqUpdateOne {
-	if s != nil {
-		auo.SetReqBody(*s)
-	}
+func (auo *ApireqUpdateOne) SetReqBody(m map[string]interface{}) *ApireqUpdateOne {
+	auo.mutation.SetReqBody(m)
 	return auo
 }
 
@@ -310,16 +262,8 @@ func (auo *ApireqUpdateOne) ClearReqBody() *ApireqUpdateOne {
 }
 
 // SetReqHeaders sets the "req_headers" field.
-func (auo *ApireqUpdateOne) SetReqHeaders(s struct{}) *ApireqUpdateOne {
-	auo.mutation.SetReqHeaders(s)
-	return auo
-}
-
-// SetNillableReqHeaders sets the "req_headers" field if the given value is not nil.
-func (auo *ApireqUpdateOne) SetNillableReqHeaders(s *struct{}) *ApireqUpdateOne {
-	if s != nil {
-		auo.SetReqHeaders(*s)
-	}
+func (auo *ApireqUpdateOne) SetReqHeaders(m map[string]interface{}) *ApireqUpdateOne {
+	auo.mutation.SetReqHeaders(m)
 	return auo
 }
 
@@ -330,16 +274,8 @@ func (auo *ApireqUpdateOne) ClearReqHeaders() *ApireqUpdateOne {
 }
 
 // SetReqMetadata sets the "req_metadata" field.
-func (auo *ApireqUpdateOne) SetReqMetadata(s struct{}) *ApireqUpdateOne {
-	auo.mutation.SetReqMetadata(s)
-	return auo
-}
-
-// SetNillableReqMetadata sets the "req_metadata" field if the given value is not nil.
-func (auo *ApireqUpdateOne) SetNillableReqMetadata(s *struct{}) *ApireqUpdateOne {
-	if s != nil {
-		auo.SetReqMetadata(*s)
-	}
+func (auo *ApireqUpdateOne) SetReqMetadata(m map[string]interface{}) *ApireqUpdateOne {
+	auo.mutation.SetReqMetadata(m)
 	return auo
 }
 

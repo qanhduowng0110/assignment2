@@ -50,10 +50,10 @@ type ApireqMutation struct {
 	typ           string
 	id            *int
 	req_time      *time.Time
-	req_param     *struct{}
-	req_body      *struct{}
-	req_headers   *struct{}
-	req_metadata  *struct{}
+	req_param     *map[string]interface{}
+	req_body      *map[string]interface{}
+	req_headers   *map[string]interface{}
+	req_metadata  *map[string]interface{}
 	created_at    *time.Time
 	updated_at    *time.Time
 	deleted_at    *time.Time
@@ -204,12 +204,12 @@ func (m *ApireqMutation) ResetReqTime() {
 }
 
 // SetReqParam sets the "req_param" field.
-func (m *ApireqMutation) SetReqParam(s struct{}) {
-	m.req_param = &s
+func (m *ApireqMutation) SetReqParam(value map[string]interface{}) {
+	m.req_param = &value
 }
 
 // ReqParam returns the value of the "req_param" field in the mutation.
-func (m *ApireqMutation) ReqParam() (r struct{}, exists bool) {
+func (m *ApireqMutation) ReqParam() (r map[string]interface{}, exists bool) {
 	v := m.req_param
 	if v == nil {
 		return
@@ -220,7 +220,7 @@ func (m *ApireqMutation) ReqParam() (r struct{}, exists bool) {
 // OldReqParam returns the old "req_param" field's value of the Apireq entity.
 // If the Apireq object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ApireqMutation) OldReqParam(ctx context.Context) (v struct{}, err error) {
+func (m *ApireqMutation) OldReqParam(ctx context.Context) (v map[string]interface{}, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldReqParam is only allowed on UpdateOne operations")
 	}
@@ -240,12 +240,12 @@ func (m *ApireqMutation) ResetReqParam() {
 }
 
 // SetReqBody sets the "req_body" field.
-func (m *ApireqMutation) SetReqBody(s struct{}) {
-	m.req_body = &s
+func (m *ApireqMutation) SetReqBody(value map[string]interface{}) {
+	m.req_body = &value
 }
 
 // ReqBody returns the value of the "req_body" field in the mutation.
-func (m *ApireqMutation) ReqBody() (r struct{}, exists bool) {
+func (m *ApireqMutation) ReqBody() (r map[string]interface{}, exists bool) {
 	v := m.req_body
 	if v == nil {
 		return
@@ -256,7 +256,7 @@ func (m *ApireqMutation) ReqBody() (r struct{}, exists bool) {
 // OldReqBody returns the old "req_body" field's value of the Apireq entity.
 // If the Apireq object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ApireqMutation) OldReqBody(ctx context.Context) (v struct{}, err error) {
+func (m *ApireqMutation) OldReqBody(ctx context.Context) (v map[string]interface{}, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldReqBody is only allowed on UpdateOne operations")
 	}
@@ -289,12 +289,12 @@ func (m *ApireqMutation) ResetReqBody() {
 }
 
 // SetReqHeaders sets the "req_headers" field.
-func (m *ApireqMutation) SetReqHeaders(s struct{}) {
-	m.req_headers = &s
+func (m *ApireqMutation) SetReqHeaders(value map[string]interface{}) {
+	m.req_headers = &value
 }
 
 // ReqHeaders returns the value of the "req_headers" field in the mutation.
-func (m *ApireqMutation) ReqHeaders() (r struct{}, exists bool) {
+func (m *ApireqMutation) ReqHeaders() (r map[string]interface{}, exists bool) {
 	v := m.req_headers
 	if v == nil {
 		return
@@ -305,7 +305,7 @@ func (m *ApireqMutation) ReqHeaders() (r struct{}, exists bool) {
 // OldReqHeaders returns the old "req_headers" field's value of the Apireq entity.
 // If the Apireq object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ApireqMutation) OldReqHeaders(ctx context.Context) (v struct{}, err error) {
+func (m *ApireqMutation) OldReqHeaders(ctx context.Context) (v map[string]interface{}, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldReqHeaders is only allowed on UpdateOne operations")
 	}
@@ -338,12 +338,12 @@ func (m *ApireqMutation) ResetReqHeaders() {
 }
 
 // SetReqMetadata sets the "req_metadata" field.
-func (m *ApireqMutation) SetReqMetadata(s struct{}) {
-	m.req_metadata = &s
+func (m *ApireqMutation) SetReqMetadata(value map[string]interface{}) {
+	m.req_metadata = &value
 }
 
 // ReqMetadata returns the value of the "req_metadata" field in the mutation.
-func (m *ApireqMutation) ReqMetadata() (r struct{}, exists bool) {
+func (m *ApireqMutation) ReqMetadata() (r map[string]interface{}, exists bool) {
 	v := m.req_metadata
 	if v == nil {
 		return
@@ -354,7 +354,7 @@ func (m *ApireqMutation) ReqMetadata() (r struct{}, exists bool) {
 // OldReqMetadata returns the old "req_metadata" field's value of the Apireq entity.
 // If the Apireq object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ApireqMutation) OldReqMetadata(ctx context.Context) (v struct{}, err error) {
+func (m *ApireqMutation) OldReqMetadata(ctx context.Context) (v map[string]interface{}, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldReqMetadata is only allowed on UpdateOne operations")
 	}
@@ -632,28 +632,28 @@ func (m *ApireqMutation) SetField(name string, value ent.Value) error {
 		m.SetReqTime(v)
 		return nil
 	case apireq.FieldReqParam:
-		v, ok := value.(struct{})
+		v, ok := value.(map[string]interface{})
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetReqParam(v)
 		return nil
 	case apireq.FieldReqBody:
-		v, ok := value.(struct{})
+		v, ok := value.(map[string]interface{})
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetReqBody(v)
 		return nil
 	case apireq.FieldReqHeaders:
-		v, ok := value.(struct{})
+		v, ok := value.(map[string]interface{})
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetReqHeaders(v)
 		return nil
 	case apireq.FieldReqMetadata:
-		v, ok := value.(struct{})
+		v, ok := value.(map[string]interface{})
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}

@@ -21,13 +21,13 @@ type Apireq struct {
 	// ReqTime holds the value of the "req_time" field.
 	ReqTime time.Time `json:"req_time,omitempty"`
 	// ReqParam holds the value of the "req_param" field.
-	ReqParam struct{} `json:"req_param,omitempty"`
+	ReqParam map[string]interface{} `json:"req_param,omitempty"`
 	// ReqBody holds the value of the "req_body" field.
-	ReqBody struct{} `json:"req_body,omitempty"`
+	ReqBody map[string]interface{} `json:"req_body,omitempty"`
 	// ReqHeaders holds the value of the "req_headers" field.
-	ReqHeaders struct{} `json:"req_headers,omitempty"`
+	ReqHeaders map[string]interface{} `json:"req_headers,omitempty"`
 	// ReqMetadata holds the value of the "req_metadata" field.
-	ReqMetadata struct{} `json:"req_metadata,omitempty"`
+	ReqMetadata map[string]interface{} `json:"req_metadata,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.

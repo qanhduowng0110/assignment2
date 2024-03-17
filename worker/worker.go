@@ -1,9 +1,18 @@
 package worker
 
-function AutoSync(){
-	app.Post("/api/earthquakes/sync-data", func(c *fiber.Ctx) error {
-		services.ApiImportEarthquake()
-		return c.SendString("Sucess!")
-	})
-	time.Sleep(10 * time.Minute)
+import (
+	"entdemo/services"
+	"time"
+)
+
+func AutoSync() {
+	ticker := time.NewTicker(10 * time.Minute)
+	defer ticker.Stop()
+
+	for {
+		select {
+		case <-ticker.C:
+			services.ApiImportEarthquake()
+		}
+	}
 }
